@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy Birthday Vishakha</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  height:100%;
+  overflow:hidden;
+  font-family:'Inter',system-ui,sans-serif;
+  color:#fff;
+}
+
+/* ✅ MATCHED AESTHETIC BACKGROUND */
+body{
+  background:
+    radial-gradient(circle at 50% 20%, #6a1e2a 0%, transparent 45%),
+    radial-gradient(circle at bottom, #2a0c12 0%, transparent 55%),
+    linear-gradient(180deg, #3a0f17 0%, #1a070a 100%);
+}
+
+/* SOFT VIGNETTE */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,.07), transparent 60%),
+    radial-gradient(circle at center, rgba(0,0,0,.6), transparent 70%);
+  z-index:-2;
+}
+
+/* PARTICLES */
+canvas{
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+}
+
+/* 🌸✨ FLOATING ELEMENTS */
+.float{
+  position:fixed;
+  font-size:22px;
+  opacity:.35;
+  animation:floatUp linear forwards;
+}
+
+@keyframes floatUp{
+  from{transform:translateY(0) rotate(0deg)}
+  to{transform:translateY(-140vh) rotate(360deg)}
+}
+
+/* CONTENT */
+.container{
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:2rem;
+}
+
+h2{
+  font-family:'Playfair Display',serif;
+  letter-spacing:.25em;
+  font-size:.9rem;
+  opacity:.75;
+  margin-bottom:1rem;
+}
+
+h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.6rem,7vw,4.2rem);
+  letter-spacing:.08em;
+  margin-bottom:1rem;
+  animation:glow 4s ease-in-out infinite;
+}
+
+p{
+  max-width:600px;
+  font-size:1.05rem;
+  line-height:1.8;
+  color:#f3eaea;
+}
+
+.small{
+  margin-top:1.2rem;
+  font-size:.85rem;
+  opacity:.7;
+}
+
+/* GLOW */
+@keyframes glow{
+  0%,100%{text-shadow:0 0 12px rgba(255,200,200,.3)}
+  50%{text-shadow:0 0 28px rgba(255,200,200,.55)}
+}
+
+/* START SCREEN */
+#start{
+  position:fixed;
+  inset:0;
+  background:#1a070a;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  letter-spacing:.3em;
+  font-size:.9rem;
+  cursor:pointer;
+  z-index:10;
+  color:#c9baba;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="particles"></canvas>
+
+<div id="start">TAP TO BEGIN</div>
+
+<div class="container">
+  <div>
+    <h2>HAPPY BIRTHDAY</h2>
+    <h1>Vishakha</h1>
+    <p>
+      Wishing you a day wrapped in warmth,  
+      quiet happiness, and moments that stay with you.  
+      Some people bring calm wherever they go —  
+      and you are one of them.
+    </p>
+    <div class="small">✨</div>
+  </div>
+</div>
+
+<!-- 🎵 MUSIC (UNCHANGED) -->
+<audio id="music" loop>
+  <source src="https://cdn.pixabay.com/audio/2023/04/12/audio_4fcd8f2d7a.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+/* PARTICLES BACKGROUND */
+const c = document.getElementById("particles");
+const ctx = c.getContext("2d");
+c.width = innerWidth;
+c.height = innerHeight;
+
+const dots = Array.from({length:60},()=>({
+  x:Math.random()*c.width,
+  y:Math.random()*c.height,
+  r:Math.random()*1.2+0.4,
+  v:Math.random()*0.12+0.04,
+  a:Math.random()*10
+}));
+
+function animate(){
+  ctx.clearRect(0,0,c.width,c.height);
+  dots.forEach(d=>{
+    d.a+=0.02;
+    ctx.beginPath();
+    ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,230,230,${0.2+Math.sin(d.a)*0.15})`;
+    ctx.fill();
+    d.y-=d.v;
+    if(d.y<0)d.y=c.height;
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* START */
+const start = document.getElementById("start");
+const music = document.getElementById("music");
+
+start.onclick = () => {
+  start.style.display = "none";
+
+  music.volume = 0;
+  music.play();
+  let v = 0;
+  const fade = setInterval(()=>{
+    v += 0.02;
+    music.volume = Math.min(v, 0.45);
+    if(v >= 0.45) clearInterval(fade);
+  },120);
+
+  startFloating();
+};
+
+/* FLOATING ELEMENTS (UNCHANGED) */
+function startFloating(){
+  const emojis = ["🌸","🌷","✨","⭐"];
+
+  setInterval(()=>{
+    const el = document.createElement("div");
+    el.className = "float";
+    el.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+
+    el.style.left = Math.random()*100 + "%";
+    el.style.top = (78 + Math.random()*15) + "%";
+    el.style.animationDuration = (18 + Math.random()*8) + "s";
+
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(), 26000);
+  }, 1800);
+}
+
+onresize = ()=>{
+  c.width = innerWidth;
+  c.height = innerHeight;
+};
+</script>
+
+</body>
+</html>
